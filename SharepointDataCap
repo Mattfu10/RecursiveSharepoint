@@ -1,0 +1,21 @@
+Add-PSSnapin Microsoft.SharePoint.PowerShell
+
+$databases = "ContentDB01", "ContentDB02"
+$sizealert = "100000"
+
+Foreach ($database in $databases)
+{
+    $dbsizebytes = (Get-SPDatabase |? {$_.name -eq "$database"} | select disksizerequired).DiskSizeRequired
+    $dbsize = $dbsizebytes/1024/1024
+
+    If ($dbsize -gt $sizealert)
+    {
+        #Do something if dbsize is over sizealert
+        Send-MailMessage -From 'no-reply@company.com' -To "John.Smith@company.com" -Subject "$databse size warning" -Body "$Database size has exceeded $sizealert. Database size: $dbsize" -SmtpServer 'Mail-Server-MBX1' -Port 25
+    }
+}
+
+
+
+Credit to https://gist.github.com/WetFishing/9d1efe34a1ed1f0a08c62a96a03dfc45
+ WetFishing from Reddit!
